@@ -1,9 +1,9 @@
 ﻿import discord
 import re
+import datetime
 
-client = discord.Client()
 
-TARGET_MESSAGE = re.compile(r"^>\s*(.*)")
+TARGET_MESSAGE = re.compile(r"^>\s*(\S+)\s*(\S+)?")
 
 PRIOR_NOTICE = 10 # n分前に告知する
 
@@ -11,6 +11,7 @@ BOSS_ALIAS_MAP = {
         "MUNEN":"無念",
         "バフォ":"バフォメット",
         "カスパ":"四賢者",
+        "カスパー":"四賢者",
         "GGA":"ジャイアントガードアント",
         "スピ":"スピリッド",
         "ネクロ":"ネクロマンサー",
@@ -65,7 +66,7 @@ BOSS_INTERVAL_MAP = {
         "フェニックス":420,
         }
 
-
+client = discord.Client()
 
 @client.event
 async def on_ready():
@@ -76,15 +77,27 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    print(message.content)
     match_result = TARGET_MESSAGE.match(message.content)
     if match_result:
         target_name = match_result.group(1)
         boss_name = BOSS_ALIAS_MAP.get(target_name.upper(), target_name)
         interval_time = BOSS_INTERVAL_MAP.get(boss_name, False)
         if interval_time:
-            notify_time = interval_time - PRIOR_NOTICE if interval_time > PRIOR_NOTICE else interval_time
-            text = "$natural in %d minutes send %sがそろそろ沸きます to <#592022570979688463>" % (notify_time, boss_name)
+            try:
+                end_time = match_result.group(2)
+                if end_time:
+                    now = datetime.datetime.now()
+                    end = datetime.datetime.combine(now.today(), datetime.datetime.strptime(end_time, "%H:%M").time())
+                    if now < end:
+                        raise ValueError
+                    elapsed_time = round((now - end).total_seconds() / 60)
+                    if interval_time < elapsed_time:
+                        raise ValueError
+                    interval_time -= elapsed_time
+                notify_time = interval_time - PRIOR_NOTICE if interval_time > PRIOR_NOTICE else interval_time
+                text = "$natural in %d minutes send %sがそろそろ沸きます to <#592022570979688463>" % (notify_time, boss_name)
+            except ValueError:
+                text = "スミマセン、倒した時間は 時:分 で書いてください..."
         elif boss_name == "無念":
             text = "無念です..."
         else:
