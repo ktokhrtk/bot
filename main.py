@@ -226,7 +226,7 @@ class BotClient(discord.AutoShardedClient):
 
     async def on_message(self, message):
 
-        if message.author.bot or message.content is None:
+        if message.content is None:
             return
 
         u: User = session.query(User).filter(User.user == message.author.id)
