@@ -424,7 +424,7 @@ class BotClient(discord.AutoShardedClient):
 
         time_crop = stripped.split(server.language.get_string('natural/send'))[0]
         message_crop = stripped.split(server.language.get_string('natural/send'), 1)[1]
-        datetime_obj = await self.do_blocking( partial(dateparser.parse, time_crop, settings={'TIMEZONE': server.timezone, 'TO_TIMEZONE': 'UTC'}) )
+        datetime_obj = await self.do_blocking( partial(dateparser.parse, time_crop, settings={'TIMEZONE': server.timezone}) )
 
         if datetime_obj is None:
             await message.channel.send(embed=discord.Embed(description=server.language.get_string('natural/invalid_time')))

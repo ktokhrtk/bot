@@ -10,6 +10,7 @@ PRIOR_NOTICE = 10 # n分前に告知する
 BOSS_ALIAS_MAP = {
         "MUNEN":"無念",
         "バフォ":"バフォメット",
+        "ガースト":"ガーストロード",
         "カスパ":"四賢者",
         "カスパー":"四賢者",
         "GGA":"ジャイアントガードアント",
@@ -22,16 +23,25 @@ BOSS_ALIAS_MAP = {
         "ボスクライン":"ファウスト",
         "クライン":"ファウスト",
         "ドッペ":"ドッペルゲンガーボス",
+        "ドッペボス":"ドッペルゲンガーボス",
         "ワーム":"ジャイアントワーム",
         "赤シャスキー":"狂風のシャスキー",
+        "赤シャス":"狂風のシャスキー",
+        "赤":"狂風のシャスキー",
         "緑シャスキー":"疾風のシャスキー",
+        "緑シャス":"疾風のシャスキー",
+        "緑":"疾風のシャスキー",
         "BE":"ブラックエルダー",
         "ワニ":"ジャイアントクロコダイル",
         "クロコ":"ジャイアントクロコダイル",
         "上ドレ":"上ドレイク",
+        "上":"上ドレイク",
         "下ドレ":"下ドレイク",
+        "下":"下ドレイク",
         "右ドレ":"右ドレイク",
+        "右":"右ドレイク",
         "中ドレ":"中ドレイク",
+        "中":"中ドレイク",
         "イフ":"イフリート",
         "マーヨ":"ビッグフットマーヨ",
         "フェニ":"フェニックス",
@@ -85,8 +95,8 @@ async def on_message(message):
         if interval_time:
             try:
                 end_time = match_result.group(2)
+                now = datetime.datetime.now()
                 if end_time:
-                    now = datetime.datetime.now()
                     end = datetime.datetime.combine(now.today(), datetime.datetime.strptime(end_time, "%H:%M").time())
                     if now < end:
                         raise ValueError
@@ -94,14 +104,16 @@ async def on_message(message):
                     if interval_time < elapsed_time:
                         raise ValueError
                     interval_time -= elapsed_time
+                    now = end
                 notify_time = interval_time - PRIOR_NOTICE if interval_time > PRIOR_NOTICE else interval_time
-                text = "$natural in %d minutes send %sがそろそろ沸きます to <#592022570979688463>" % (notify_time, boss_name)
+                now += datetime.timedelta(minutes=interval_time)
+                text = "$natural in %d minutes send %sが%sに沸きます to <#592022570979688463>" % (notify_time, boss_name, re.sub(r'0(\d+)', r'\1', now.strftime("%H時%M分")))
             except ValueError:
                 text = "スミマセン、倒した時間は 時:分 で書いてください..."
         elif boss_name == "無念":
             text = "無念です..."
         else:
-            text = "スミマセン、%sは知らない人です..." % target_name
+            text = "スミマセン、%s は知らないボスです..." % target_name
         print(text)
         await message.channel.send(text)
 
