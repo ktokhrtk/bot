@@ -110,3 +110,4 @@ terminal.glue
 data.msgpack.zlib
 alembic.ini
 nohup.out
+cred.json

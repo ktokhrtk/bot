@@ -59,6 +59,7 @@ class BotClient(discord.AutoShardedClient):
             'timer' : Command(self.timer, True, PermissionLevels.MANAGED),
             'del' : Command(self.delete, True, PermissionLevels.MANAGED),
             'look' : Command(self.look, True, PermissionLevels.MANAGED),
+            'clear' : Command(self.clear, True),
 
             'todo' : Command(self.todo),
             'todos' : Command(self.todo, False, PermissionLevels.MANAGED),
@@ -863,6 +864,38 @@ class BotClient(discord.AutoShardedClient):
                 continue
 
         await message.channel.send(prefs.language.get_string('del/count').format(dels))
+        session.commit()
+
+
+    async def clear(self, message, stripped, prefs):
+        li = [ch.id for ch in message.guild.channels] ## get all channels and their ids in the current server
+
+        n = 1
+
+        reminders = session.query(Reminder).filter(Reminder.channel.in_(li)).all()
+
+        s = ''
+        for rem in reminders:
+            string = '''**{}**: '{}' *<#{}>*\n'''.format(
+                n,
+                self.clean_string(rem.message, message.guild),
+                rem.channel)
+
+            if len(s) + len(string) > 2000:
+                await message.channel.send(s)
+                s = string
+            else:
+                s += string
+
+            n += 1
+
+        if s:
+            await message.channel.send(s)
+
+        session.query(Reminder).delete()
+        logger.info('Clear reminder')
+
+        await message.channel.send(prefs.language.get_string('del/count').format('all'))
         session.commit()
 
 

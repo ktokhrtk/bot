@@ -13,3 +13,7 @@ class Config():
 
         self.patreon: bool = config.get('DEFAULT', 'patreon_enabled') == 'yes'
         self.patreon_server: int = int(config.get('DEFAULT', 'patreon_server'))
+
+        self.webhook: str = config.get('DEFAULT', 'webhook')
+
+        self.gspread_key: str = config.get('GSPREAD', 'key')
