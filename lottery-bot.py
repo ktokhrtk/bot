@@ -1,43 +1,12 @@
-from config import Config
+﻿from config import Config
 import discord
 import random
-import re
 
 CONFIG = Config()
 
-box = {}
+PARTICIPATED_EMOJI = "participated"
 
-async def reset(message, num):
-    global box
-    try:
-        n = min(10000, int(num))
-    except:
-        n = 100
-    tickets = list(range(1, n + 1))
-    random.shuffle(tickets)
-    box[message.channel] = tickets
-    await message.channel.send('%sのくじをリセットしました（残り%d枚）' % (message.channel, len(tickets)))
-
-async def lottery(message, num):
-    global box
-    try:
-        n = max(int(num), 1)
-    except:
-        n = 1
-    tickets = box.get(message.channel, None)
-    if tickets:
-        results = map(str, tickets[-n:])
-        tickets = tickets[0:-n]
-        await message.channel.send('抽選結果：%s （残り%d枚）' % (', '.join(results), len(tickets)))
-        box[message.channel] = tickets[0:-n]
-    else:
-        await message.channel.send('くじがありません。「抽選リセット」でくじを補充してください')
-        
-
-COMMAND_MAP = {
-    re.compile(r"^抽選\s*リセット\s*(\d+)$"): reset,
-    re.compile(r"^抽選\s*(\d+)?$"): lottery,
-}
+LOTTERY_EMOJI ="lottery"
 
 client = discord.Client()
 
@@ -46,12 +15,16 @@ async def on_ready():
     print(__file__, 'Logged in as %s' % client.user.name)
 
 @client.event
-async def on_message(message):
-    print(message.channel)
-    for k, v in COMMAND_MAP.items():
-        match_result = k.match(message.content)
-        if match_result:
-            await v(message, *match_result.groups())
-            break
+async def on_reaction_add(reaction, user):
+    if user.bot:
+        return
+
+    if reaction.message.author == user and reaction.custom_emoji and reaction.emoji.name == LOTTERY_EMOJI:
+        for r in reaction.message.reactions:
+            if r.custom_emoji and r.emoji.name == PARTICIPATED_EMOJI:
+                users = await r.users().flatten()
+                winner = random.choice(users)
+                await reaction.message.channel.send("> " + reaction.message.content.replace("\n", "\n> ") + "\n当選者: " + winner.mention)
+                break
 
 client.run(CONFIG.token)
