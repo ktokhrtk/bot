@@ -1,6 +1,7 @@
 ﻿from config import Config
 import discord
 import random
+import pytz
 
 CONFIG = Config()
 
@@ -24,7 +25,10 @@ async def on_raw_reaction_add(payload):
             if r.custom_emoji and r.emoji.name == PARTICIPATED_EMOJI:
                 users = await r.users().flatten()
                 winner = random.choice(users)
-                await message.channel.send("> " + message.content.replace("\n", "\n> ") + "\n当選者: " + winner.mention)
+                e = discord.Embed()
+                e.set_author(name=message.created_at.replace(tzinfo=pytz.utc).astimezone().strftime('%Y/%m/%d %H:%M:%S'))
+                e.set_footer(text=message.clean_content)
+                await message.channel.send("当選者" + winner.mention, embed=e)
                 break
 
 client.run(CONFIG.token)

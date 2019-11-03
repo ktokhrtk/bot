@@ -17,3 +17,5 @@ class Config():
         self.webhook: str = config.get('DEFAULT', 'webhook')
 
         self.gspread_key: str = config.get('GSPREAD', 'key')
+
+        self.dbm_channel: int = int(config.get('DEFAULT', 'dbm_channel_id'))

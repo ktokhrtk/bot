@@ -910,7 +910,7 @@ class BotClient(discord.AutoShardedClient):
             await message.channel.send(prefs.language.get_string('look/listing'))
 
             s = ''
-            for rem in reminders:
+            for rem in sorted(reminders, key=lambda rem: rem.time):
                 string = '\'{}\' *{}* **{}**\n'.format(
                     self.clean_string(rem.message, message.guild),
                     prefs.language.get_string('look/inter'),

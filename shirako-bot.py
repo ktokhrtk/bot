@@ -1,6 +1,4 @@
-﻿import aiohttp
-import asyncio
-from config import Config
+﻿from config import Config
 import datetime
 import discord
 import gspread
@@ -93,19 +91,17 @@ BOSS_INTERVAL_MAP = {
     "デーモン":False,
 }
 
-TARGET_MESSAGE = re.compile(r"^>\s*(\S+)\s*(\S+)?")
+TARGET_MESSAGE = re.compile(r"^(>|\?)\s*(\S+)\s*(\S+)?")
 
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+
+TIME_FORMATS = ['%H:%M', '%H:%M:%S']
 
 class BossTimeError(ValueError):
     pass
 
-async def send_webhook(message):
-    async with aiohttp.ClientSession() as session:
-        wh = discord.Webhook.from_url(CONFIG.webhook, adapter=discord.AsyncWebhookAdapter(session))
-        await wh.send(message)    
-
 client = discord.Client()
+
 
 @client.event
 async def on_ready():
@@ -115,44 +111,52 @@ async def on_ready():
 async def on_message(message):
     match_result = TARGET_MESSAGE.match(message.content)
     if match_result:
-        target_name = match_result.group(1)
+        command = match_result.group(1)
+        target_name = match_result.group(2)
         boss_name = BOSS_ALIAS_MAP.get(target_name.upper(), target_name)
         try:
             interval_time = BOSS_INTERVAL_MAP[boss_name]
             if interval_time:
                 try:
-                    end_time = match_result.group(2)
+                    end_time = match_result.group(3)
                     now = datetime.datetime.now()
                     end = now
                     if end_time:
-                        end = datetime.datetime.combine(now.today(), datetime.datetime.strptime(end_time, "%H:%M").time())
-                        if now < end:
-                            end -= datetime.timedelta(days=1)
-                        elapsed_time = now - end
-                        if interval_time < elapsed_time:
-                            raise BossTimeError
-                        interval_time -= elapsed_time
+                        time_format = end_time.count(':') - 1
+                        if time_format >= 0:
+                            end = datetime.datetime.combine(now.today(), datetime.datetime.strptime(end_time, TIME_FORMATS[time_format]).time())
+                            if now < end:
+                                end -= datetime.timedelta(days=1)
+                            elapsed_time = now - end
+                            if interval_time < elapsed_time:
+                                raise BossTimeError
+                            interval_time -= elapsed_time
                     notify_time = interval_time - PRIOR_NOTICE if interval_time > PRIOR_NOTICE else interval_time
                     now += interval_time
                     creds = ServiceAccountCredentials.from_json_keyfile_name('cred.json', scopes=SCOPES)
                     sheet = gspread.authorize(creds).open_by_key(CONFIG.gspread_key).sheet1
+                    prev_time = '不明'
                     for cell in sheet.range('A2:A30'):
                         if boss_name == cell.value:
-                            sheet.update_cell(cell.row, cell.col + 3, end.strftime("%Y/%m/%d %H:%M"))
-                            format_cell_range(sheet, gspread.utils.rowcol_to_a1(cell.row, cell.col + 3), cellFormat(backgroundColor=color(0.94, 0.94, 0.94)))
-                    await send_webhook("%s END" % boss_name)
-                    text = "$natural in %d minutes send %sが%sに湧きます to <#592022570979688463>" % (round(notify_time.total_seconds() / 60), boss_name, re.sub(r'0(\d+)', r'\1', now.strftime("%H時%M分")))
-                except ValueError:
-                    text = "時間を指定する場合は 時:分 でお願いします"
+                            if command != '?':
+                                sheet.update_cell(cell.row, cell.col + 3, end.strftime("%Y/%m/%d %H:%M:%S"))
+                                format_cell_range(sheet, gspread.utils.rowcol_to_a1(cell.row, cell.col + 3), cellFormat(backgroundColor=color(0.94, 0.94, 0.94)))
+                            prev_time = sheet.cell(cell.row, cell.col + 3).value
+                            break
+                    for channel in [i for i in client.get_all_channels() if i.id == CONFIG.dbm_channel]:
+                        if command != '?':
+                            await channel.send("%s END" % boss_name)
+                        await message.channel.send("$natural in %d minutes send %sが%sに湧きます（最終討伐は%sです） to %s" % (round(notify_time.total_seconds() / 60), boss_name, re.sub(r'0(\d+)', r'\1', now.strftime("%H時%M分%S秒")), prev_time, channel.mention))
+                except (ValueError, IndexError):
+                    await message.channel.send("時間を指定する場合は 時:分 または 時:分:秒 でお願いします")
                 except BossTimeError:
-                    text = "前回の出現時間より前の時間を指定することはできません"
+                    await message.channel.send("前回の出現時間より前の時間を指定することはできません")
             else:
-                text = "%s は時間管理対象外です" % boss_name
+                await message.channel.send("%s は時間管理対象外です" % boss_name)
         except KeyError:
             if boss_name == "無念":
-                text = "無念です..."
+                await message.channel.send("無念です...")
             else:
-                text = "%s は知らないボスです" % target_name
-        await message.channel.send(text)
+                await message.channel.send("%s は知らないボスです" % target_name)
 
 client.run(CONFIG.token)
