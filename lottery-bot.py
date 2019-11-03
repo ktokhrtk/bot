@@ -15,16 +15,16 @@ async def on_ready():
     print(__file__, 'Logged in as %s' % client.user.name)
 
 @client.event
-async def on_reaction_add(reaction, user):
-    if user.bot:
-        return
+async def on_raw_reaction_add(payload):
+    message = await client.get_channel(payload.channel_id).fetch_message(payload.message_id)
+    emoji = payload.emoji
 
-    if reaction.message.author == user and reaction.custom_emoji and reaction.emoji.name == LOTTERY_EMOJI:
-        for r in reaction.message.reactions:
+    if message.author.id == payload.user_id and emoji.is_custom_emoji() and emoji.name == LOTTERY_EMOJI:
+        for r in message.reactions:
             if r.custom_emoji and r.emoji.name == PARTICIPATED_EMOJI:
                 users = await r.users().flatten()
                 winner = random.choice(users)
-                await reaction.message.channel.send("> " + reaction.message.content.replace("\n", "\n> ") + "\n当選者: " + winner.mention)
+                await message.channel.send("> " + message.content.replace("\n", "\n> ") + "\n当選者: " + winner.mention)
                 break
 
 client.run(CONFIG.token)

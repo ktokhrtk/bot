@@ -57,6 +57,8 @@ BOSS_ALIAS_MAP = {
     "フェニ":"フェニックス",
     "AG":"エンシェントジャイアント",
     "ジャイアン":"エンシェントジャイアント",
+    "青閣下":"モニターデーモン",
+    "閣下":"デーモン",
 }
 
 BOSS_INTERVAL_MAP = {
@@ -87,6 +89,8 @@ BOSS_INTERVAL_MAP = {
     "ビッグフットマーヨ":datetime.timedelta(minutes=180),
     "フェニックス":datetime.timedelta(minutes=420),
     "エンシェントジャイアント":datetime.timedelta(minutes=300),
+    "モニターデーモン":datetime.timedelta(minutes=420),
+    "デーモン":False,
 }
 
 TARGET_MESSAGE = re.compile(r"^>\s*(\S+)\s*(\S+)?")
@@ -109,9 +113,6 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if message.author.bot or message.content == None:
-        return
-
     match_result = TARGET_MESSAGE.match(message.content)
     if match_result:
         target_name = match_result.group(1)
