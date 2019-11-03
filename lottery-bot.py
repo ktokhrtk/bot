@@ -5,9 +5,9 @@ import pytz
 
 CONFIG = Config()
 
-PARTICIPATED_EMOJI = "participated"
+PARTICIPATED_EMOJI = 'participated'
 
-LOTTERY_EMOJI ="lottery"
+LOTTERY_EMOJI ='lottery'
 
 client = discord.Client()
 
@@ -28,7 +28,7 @@ async def on_raw_reaction_add(payload):
                 e = discord.Embed()
                 e.set_author(name=message.created_at.replace(tzinfo=pytz.utc).astimezone().strftime('%Y/%m/%d %H:%M:%S'))
                 e.set_footer(text=message.clean_content)
-                await message.channel.send("当選者" + winner.mention, embed=e)
+                await message.channel.send('当選者 ' + winner.mention, embed=e)
                 break
 
 client.run(CONFIG.token)
