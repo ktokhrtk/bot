@@ -146,7 +146,7 @@ async def on_message(message):
                     for channel in [i for i in client.get_all_channels() if i.id == CONFIG.dbm_channel]:
                         if killed:
                             await channel.send("%s END" % boss_name)
-                        await message.channel.send("$natural in %d minutes send %sが%sに湧きます（最終討伐は%sです） to %s" % (round(notify_time.total_seconds() / 60), boss_name, re.sub(r'0(\d+)', r'\1', now.strftime("%H時%M分%S秒")), prev_time, channel.mention))
+                    await message.channel.send("$natural in %d minutes send %sが%sに湧きます（最終討伐は%sです）" % (round(notify_time.total_seconds() / 60), boss_name, re.sub(r'0(\d+)', r'\1', now.strftime("%H時%M分%S秒")), prev_time))
                 except (ValueError, IndexError):
                     await message.channel.send('時間を指定する場合は 時:分 または 時:分:秒 でお願いします')
                 except BossTimeError:

@@ -43,13 +43,17 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    if not message.author.bot:
+        return
+
     match_result = TARGET_MESSAGE.match(message.content)
     if match_result:
         boss_name = match_result.group(1)
         map_url = BOSS_INTERVAL_MAP.get(boss_name, False)
         if map_url:
-            e = discord.Embed()
+            e = discord.Embed(title=boss_name + ' の出現場所')
             e.set_image(url=map_url)
-            await message.channel.send('', embed=e)
+            for channel in [i for i in client.get_all_channels() if i.id == CONFIG.dbm_channel]:
+                await channel.send('```' + message.content + '```', embed=e)
 
 client.run(CONFIG.token)
