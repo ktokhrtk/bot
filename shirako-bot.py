@@ -148,15 +148,15 @@ async def on_message(message):
                             await channel.send("%s END" % boss_name)
                     await message.channel.send("$natural in %d minutes send %sが%sに湧きます（最終討伐は%sです）" % (round(notify_time.total_seconds() / 60), boss_name, re.sub(r'0(\d+)', r'\1', now.strftime("%H時%M分%S秒")), prev_time))
                 except (ValueError, IndexError):
-                    await message.channel.send('時間を指定する場合は 時:分 または 時:分:秒 でお願いします')
+                    await message.channel.send('エラー：時間を指定する場合は 時:分 または 時:分:秒 でお願いします')
                 except BossTimeError:
-                    await message.channel.send('前回の出現時間より前の時間を指定することはできません')
+                    await message.channel.send('エラー：前回の出現時間より前の時間を指定することはできません')
             else:
-                await message.channel.send("%s は時間管理対象外です" % boss_name)
+                await message.channel.send("エラー：%s は時間管理対象外です" % boss_name)
         except KeyError:
             if boss_name == '無念':
                 await message.channel.send('無念です...')
             else:
-                await message.channel.send("%s は知らないボスです" % target_name)
+                await message.channel.send("エラー：%s は知らないボスです" % target_name)
 
 client.run(CONFIG.token)
