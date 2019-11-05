@@ -57,7 +57,7 @@ class BotClient(discord.AutoShardedClient):
             'remind' : Command(self.remind, True, PermissionLevels.MANAGED),
             'interval' : Command(self.remind, True, PermissionLevels.MANAGED),
             'timer' : Command(self.timer, True, PermissionLevels.MANAGED),
-            'del' : Command(self.delete, True, PermissionLevels.MANAGED),
+            'del' : Command(self.delete, True),
             'look' : Command(self.look, True),
             'clear' : Command(self.clear, True),
 
