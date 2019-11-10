@@ -6,9 +6,12 @@ from gspread_formatting import *
 from oauth2client.service_account import ServiceAccountCredentials
 import re
 
+
 CONFIG = Config()
 
 PRIOR_NOTICE = datetime.timedelta(minutes=10) # 事前告知する時間
+
+ACCEPT_INTERVAL = datetime.timedelta(seconds=60) # 入力を許可する間合い
 
 BOSS_ALIAS_MAP = {
     'MUNEN':'無念',
@@ -97,6 +100,8 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 TIME_FORMATS = ['%H:%M', '%H:%M:%S']
 
+LATEST_INPUT_MAP = {}
+
 class BossTimeError(ValueError):
     pass
 
@@ -107,14 +112,14 @@ client = discord.Client()
 async def on_ready():
     print(__file__, 'Logged in as %s' % client.user.name)
 
+
 @client.event
 async def on_message(message):
-    match_result = TARGET_MESSAGE.match(message.content)
-    if not match_result:
+    if message.channel.id != CONFIG.dbm_register:
         return
 
-    if message.channel.id == CONFIG.dbm_channel and not message.author.bot:
-        await message.channel.send("エラー：%s ではDBMを利用できません" % message.channel.mention)
+    match_result = TARGET_MESSAGE.match(message.content)
+    if not match_result:
         return
 
     killed = match_result.group(1) != '?'
@@ -124,7 +129,7 @@ async def on_message(message):
         interval_time = BOSS_INTERVAL_MAP[boss_name]
         if interval_time:
             try:
-                end_time = match_result.group(3)
+                end_time = str(match_result.group(3)).replace(';', ':')
                 now = datetime.datetime.now()
                 end = now
                 if end_time:
@@ -138,6 +143,12 @@ async def on_message(message):
                             raise BossTimeError
                         interval_time -= elapsed_time
                 notify_time = interval_time - PRIOR_NOTICE if interval_time > PRIOR_NOTICE else interval_time
+                latest_input = LATEST_INPUT_MAP.get(boss_name, False)
+                if latest_input and (now - latest_input) <= ACCEPT_INTERVAL:
+                    await message.channel.send("エラー：同時登録を検出しました（最終登録は%sです）" % latest_input.strftime('%Y/%m/%d %H:%M:%S'))
+                    return
+                    
+                LATEST_INPUT_MAP[boss_name] = now
                 now += interval_time
                 creds = ServiceAccountCredentials.from_json_keyfile_name('cred.json', scopes=SCOPES)
                 sheet = gspread.authorize(creds).open_by_key(CONFIG.gspread_key).sheet1
@@ -145,14 +156,16 @@ async def on_message(message):
                 for cell in sheet.range('A2:A40'):
                     if boss_name == cell.value:
                         if killed:
-                            sheet.update_cell(cell.row, cell.col + 3, end.strftime("%Y/%m/%d %H:%M:%S"))
+                            sheet.update_cell(cell.row, cell.col + 3, end.strftime('%Y/%m/%d %H:%M:%S'))
                             format_cell_range(sheet, gspread.utils.rowcol_to_a1(cell.row, cell.col + 3), cellFormat(backgroundColor=color(0.94, 0.94, 0.94)))
                         prev_time = sheet.cell(cell.row, cell.col + 3).value
                         break
-                for channel in [i for i in client.get_all_channels() if i.id == CONFIG.dbm_channel]:
+                for channel in [i for i in client.get_all_channels() if i.id == CONFIG.dbm_notify]:
                     if killed:
                         await channel.send("%s END" % boss_name)
-                await message.channel.send("$natural in %d minutes send %sが%sに湧きます（最終討伐は%sです）" % (round(notify_time.total_seconds() / 60), boss_name, re.sub(r'0(\d+)', r'\1', now.strftime("%H時%M分%S秒")), prev_time))
+                    else:
+                        await channel.send("%s 不発" % boss_name)
+                await message.channel.send("$natural in %d minutes send %sが%sに湧きます（最終討伐は%sです）" % (round(notify_time.total_seconds() / 60), boss_name, re.sub(r'0(\d+)', r'\1', now.strftime('%H時%M分%S秒')), prev_time))
             except (ValueError, IndexError):
                 await message.channel.send('エラー：時間を指定する場合は 時:分 または 時:分:秒 でお願いします')
             except BossTimeError:
@@ -164,5 +177,6 @@ async def on_message(message):
             await message.channel.send('無念です...')
         else:
             await message.channel.send("エラー：%s は知らないボスです" % target_name)
+
 
 client.run(CONFIG.token)

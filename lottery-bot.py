@@ -3,6 +3,7 @@ import discord
 import random
 import pytz
 
+
 CONFIG = Config()
 
 PARTICIPATED_EMOJI = 'participated'
@@ -11,9 +12,11 @@ LOTTERY_EMOJI ='lottery'
 
 client = discord.Client()
 
+
 @client.event
 async def on_ready():
     print(__file__, 'Logged in as %s' % client.user.name)
+
 
 @client.event
 async def on_raw_reaction_add(payload):
@@ -30,5 +33,6 @@ async def on_raw_reaction_add(payload):
                 e.set_footer(text=message.clean_content)
                 await message.channel.send('当選者 ' + winner.mention, embed=e)
                 break
+
 
 client.run(CONFIG.token)

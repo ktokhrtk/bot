@@ -18,4 +18,6 @@ class Config():
 
         self.gspread_key: str = config.get('GSPREAD', 'key')
 
-        self.dbm_channel: int = int(config.get('DEFAULT', 'dbm_channel_id'))
+        self.dbm_notify: int = int(config.get('DEFAULT', 'dbm_notify_id'))
+        self.dbm_register: int = int(config.get('DEFAULT', 'dbm_register_id'))
+        self.dbm_proxy: int = int(config.get('DEFAULT', 'dbm_proxy_id'))

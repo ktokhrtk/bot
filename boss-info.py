@@ -2,6 +2,7 @@
 import discord
 import re
 
+
 CONFIG = Config()
 
 BOSS_POINT_MAP = {
@@ -48,8 +49,8 @@ BOSS_CHARACTER_MAP = {
     'ファウスト':'https://m-s-y.com/wp-content/uploads/2019/02/linem-faust.jpg',
     'ドッペルゲンガーボス':'https://m-s-y.com/wp-content/uploads/2019/02/linem-doppelganger-boss.jpg',
     'ジャイアントワーム':'https://m-s-y.com/wp-content/uploads/2019/02/linem-giant-worm.jpg',
-    '狂風のシャスキー':'https://m-s-y.com/wp-content/uploads/2019/02/linem-sppuu-shasky.jpg',
-    '疾風のシャスキー':'https://m-s-y.com/wp-content/uploads/2019/02/linem-kyouhu-shasky.jpg',
+    '狂風のシャスキー':'https://m-s-y.com/wp-content/uploads/2019/02/linem-kyouhu-shasky.jpg',
+    '疾風のシャスキー':'https://m-s-y.com/wp-content/uploads/2019/02/linem-sppuu-shasky.jpg',
     'ブラックエルダー':'https://m-s-y.com/wp-content/uploads/2019/02/linem-great-black-elder.jpg',
     'ジャイアントクロコダイル':'https://m-s-y.com/wp-content/uploads/2019/02/linem-giant-crocodile.jpg',
     '上ドレイク':'https://m-s-y.com/wp-content/uploads/2019/02/linem-drake.jpg',
@@ -99,27 +100,37 @@ TARGET_MESSAGE = re.compile(r'^(.+)が.+に湧きます')
 
 client = discord.Client()
 
+
 @client.event
 async def on_ready():
     print(__file__, 'Logged in as %s' % client.user.name)
+
 
 @client.event
 async def on_message(message):
     if message.author.id == client.user.id:
         return
 
+    if message.channel.id != CONFIG.dbm_register:
+        return
+
     match_result = TARGET_MESSAGE.match(message.content)
-    if match_result:
-        boss_name = match_result.group(1)
-        drop_info = BOSS_DROP_MAP.get(boss_name, '')
-        e = discord.Embed(title=boss_name + ' の情報', description=drop_info)
-        map_url = BOSS_POINT_MAP.get(boss_name, False)
-        if map_url:
-            e.set_image(url=map_url)
-        character_url = BOSS_CHARACTER_MAP.get(boss_name, False)
-        if character_url:
-            e.set_thumbnail(url=character_url)
-        for channel in [i for i in client.get_all_channels() if i.id == CONFIG.dbm_channel]:
-            await channel.send('```' + message.content + '```', embed=e)
+    if not match_result:
+        return
+
+    boss_name = match_result.group(1)
+    drop_info = BOSS_DROP_MAP.get(boss_name, '')
+    e = discord.Embed(title=boss_name + ' の情報', description=drop_info)
+    map_url = BOSS_POINT_MAP.get(boss_name, False)
+    if map_url:
+        e.set_image(url=map_url)
+    character_url = BOSS_CHARACTER_MAP.get(boss_name, False)
+    if character_url:
+        e.set_thumbnail(url=character_url)
+    for channel in [i for i in client.get_all_channels() if i.id == CONFIG.dbm_notify]:
+        m = await channel.send('```' + message.content + '```', embed=e)
+        for emoji in ['⭕', '❌']:
+            await m.add_reaction(emoji)
+
 
 client.run(CONFIG.token)
