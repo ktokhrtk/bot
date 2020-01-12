@@ -88,7 +88,7 @@ BOSS_INTERVAL_MAP = {
     'イフリート':datetime.timedelta(minutes=120),
     'ジャイアントドレイク':datetime.timedelta(minutes=180),
     'ビッグフットマーヨ':datetime.timedelta(minutes=180),
-    'フェニックス':datetime.timedelta(minutes=420),
+    'フェニックス':datetime.timedelta(minutes=415),
     'エンシェントジャイアント':datetime.timedelta(minutes=300),
     'モニターデーモン':datetime.timedelta(minutes=420),
     'デーモン':False,

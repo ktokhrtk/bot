@@ -23,7 +23,7 @@ async def m_lottery(payload):
             users += await r.users().flatten()
         winner = random.choice(list(set(users)))
         e = discord.Embed(description=message.clean_content)
-        e.set_author(name=message.author.nick + message.created_at.replace(tzinfo=pytz.utc).astimezone().strftime(' %Y/%m/%d %H:%M:%S'))
+        e.set_author(name=(message.author.nick or message.author.name) + message.created_at.replace(tzinfo=pytz.utc).astimezone().strftime(' %Y/%m/%d %H:%M:%S'))
         await message.channel.send('当選者 ' + winner.mention, embed=e)
 
 
@@ -38,7 +38,7 @@ async def m_distribution(payload):
         for user in set(users):
             text += user.mention + "\n"
         e = discord.Embed(description=message.clean_content)
-        e.set_author(name=message.author.nick + message.created_at.replace(tzinfo=pytz.utc).astimezone().strftime(' %Y/%m/%d %H:%M:%S'))
+        e.set_author(name=(message.author.nick or message.author.name) + message.created_at.replace(tzinfo=pytz.utc).astimezone().strftime(' %Y/%m/%d %H:%M:%S'))
         m = await message.channel.send(text, embed=e)
         await m.add_reaction(receipt_emoji)
 
@@ -47,7 +47,7 @@ async def m_receipt(payload):
     message = await client.get_channel(payload.channel_id).fetch_message(payload.message_id)
     user = client.get_user(payload.user_id)
     if user:
-        await message.edit(content=re.sub(r"^%s$" % user.mention.replace('@', '@!'), r"~~\g<0>~~", message.content, flags=re.M))
+        await message.edit(content=re.sub(r"^%s$" % user.mention.replace('@', '(@|@!)'), r"~~\g<0>~~", message.content, flags=re.M))
 
 
 @client.event
@@ -57,7 +57,8 @@ async def on_ready():
 
 @client.event
 async def on_raw_reaction_add(payload):
-    await eval(payload.emoji.name + '(payload)')
+    if payload.emoji.is_custom_emoji():
+        await eval(payload.emoji.name + '(payload)')
 
 
 client.run(CONFIG.token)
