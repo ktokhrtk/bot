@@ -63,14 +63,19 @@ BOSS_CHARACTER_MAP = {
     'フェニックス':'https://m-s-y.com/wp-content/uploads/2019/02/linem-pheniciks.jpg',
     'エンシェントジャイアント':'https://m-s-y.com/wp-content/uploads/2019/02/linem-ancient-giant.jpg',
     'モニターデーモン':'https://m-s-y.com/wp-content/uploads/2019/02/linem-daemon-monitor.jpg',
-    "デーモン":"https://m-s-y.com/wp-content/uploads/2019/02/linem-daemon.jpg",
-    "ゼニスクイーン":"https://m-s-y.com/wp-content/uploads/2019/02/linem-zenith-queen.jpg",
-    "シアー":"https://m-s-y.com/wp-content/uploads/2019/02/linem-sheer.jpg",
-    "ヴァンパイア":"https://m-s-y.com/wp-content/uploads/2019/02/linem-vampire.jpg",
-    "ゾンビロード":"https://m-s-y.com/wp-content/uploads/2019/02/linem-zombi-road.jpg",
-    "クーガー":"https://m-s-y.com/wp-content/uploads/2019/02/linem-cougar.jpg",
-    "マミーロード":"https://m-s-y.com/wp-content/uploads/2019/02/linem-mummy-road.jpg",
-    "アイリス":"https://m-s-y.com/wp-content/uploads/2019/02/linem-iris.jpg",
+    'デーモン':'https://m-s-y.com/wp-content/uploads/2019/02/linem-daemon.jpg',
+    'ゼニスクイーン':'https://m-s-y.com/wp-content/uploads/2019/02/linem-zenith-queen.jpg',
+    'シアー':'https://m-s-y.com/wp-content/uploads/2019/02/linem-sheer.jpg',
+    'ヴァンパイア':'https://m-s-y.com/wp-content/uploads/2019/02/linem-vampire.jpg',
+    'ゾンビロード':'https://m-s-y.com/wp-content/uploads/2019/02/linem-zombi-road.jpg',
+    'クーガー':'https://m-s-y.com/wp-content/uploads/2019/02/linem-cougar.jpg',
+    'マミーロード':'https://m-s-y.com/wp-content/uploads/2019/02/linem-mummy-road.jpg',
+    'アイリス':'https://m-s-y.com/wp-content/uploads/2019/02/linem-iris.jpg',
+    'ハーピークイーン':'https://m-s-y.com/wp-content/uploads/2019/05/linem-harpy-queen.jpg',
+    'グレートミノタウロス':'https://m-s-y.com/wp-content/uploads/2019/05/linem-great-minotaur.jpg',
+    'オーガキング':'https://m-s-y.com/wp-content/uploads/2019/05/linem-ogre-king.jpg',
+    'コカトリスキング':'https://m-s-y.com/wp-content/uploads/2019/05/linem-cockatrice-king.jpg',
+    'ドレイクキング':'https://m-s-y.com/wp-content/uploads/2019/05/linem-drake-king.jpg',
 }
 
 BOSS_DROP_MAP = {
@@ -103,13 +108,18 @@ BOSS_DROP_MAP = {
     "エンシェントジャイアント":"闇精霊の水晶(アーマーブレイク)\n古代巨人のリング\nタイタンベルト",
     "モニターデーモン":"魔法書(メテオストライク)\n闇精霊の水晶(シャドウショック)\n伝説製作秘法書\nデーモンの息吹\nデーモンスタッフ\nデーモンアーマー\nデーモンブーツ\nデーモングローブ\n英雄製作秘法書\nデーモンヘルム\nパワーグローブ\n希少級製作秘法書",
     "デーモン":"魔法書(メテオストライク)\n闇精霊の水晶(シャドウショック)\n伝説製作秘法書\nデーモンの息吹\nデーモンスタッフ\nデーモンアーマー\nデーモンブーツ\nデーモングローブ\nデーモンヘルム\n英雄製作秘法書\n技術教本 (ダッシュ)\nパワーグローブ\n希少級製作秘法書",
-    "ゼニスクイーン":"ゼニスのリング\n英雄製作秘法書\n魔法書(イミューントゥハーム)\n技術教本(魔法弾:グラブ)\n封印された傲慢の塔1階テレポートアミュレット",
-    "シアー":"魔法書(キャンセレーション)\nシアーの心眼\n英雄製作秘法書\n技術教本 (ブレイク:イミューントゥハーム)\n封印された傲慢の塔2階テレポートアミュレット",
-    "ヴァンパイア":"魔法書(ファイアーストーム)\nヴァンパイアマント\n英雄製作秘法書\n技術教本 (ブレイク:アースバインド)\nシルバーマント\n封印された傲慢の塔3階テレポートアミュレット",
-    "ゾンビロード":"激昂の グローブ\n神聖な腕力のリング\n魔法書(オラクル)\n英雄製作秘法書\n技術教本 (魔法弾:サイレンス)\n封印された祝福付与スクロール\n血濡れた包帯\nプラチナプレート\n封印された傲慢の塔4階テレポートアミュレット",
+    "ゼニスクイーン":"ゼニスのリング\n英雄製作秘法書\n魔法書(イミューントゥハーム)\n技術教本(魔法弾：グラブ)\n封印された傲慢の塔1階テレポートアミュレット",
+    "シアー":"魔法書(キャンセレーション)\nシアーの心眼\n英雄製作秘法書\n技術教本 (ブレイク：イミューントゥハーム)\n封印された傲慢の塔2階テレポートアミュレット",
+    "ヴァンパイア":"魔法書(ファイアーストーム)\nヴァンパイアマント\n英雄製作秘法書\n技術教本 (ブレイク：アースバインド)\nシルバーマント\n封印された傲慢の塔3階テレポートアミュレット",
+    "ゾンビロード":"激昂の グローブ\n神聖な腕力のリング\n魔法書(オラクル)\n英雄製作秘法書\n技術教本 (魔法弾：サイレンス)\n封印された祝福付与スクロール\n血濡れた包帯\nプラチナプレート\n封印された傲慢の塔4階テレポートアミュレット",
     "クーガー":"闇精霊の水晶(アーマーブレイク)\nダークネスデュアルブレード\n英雄製作秘法書\nクーガーの牙\nプラチナプレート\n封印された傲慢の塔5階テレポートアミュレット",
-    "マミーロード":"マミーロードクラウン\nディープインパクト\n技術教本 (魔法弾:スタン)\n神聖な機敏のリング\n闇精霊の水晶(シャドウマーキング)\n英雄製作秘法書\n精霊の水晶(アースバインド)\nゴールドプレート\n封印された傲慢の塔6階テレポートアミュレット",
+    "マミーロード":"マミーロードクラウン\nディープインパクト\n技術教本 (魔法弾：スタン)\n神聖な機敏のリング\n闇精霊の水晶(シャドウマーキング)\n英雄製作秘法書\n精霊の水晶(アースバインド)\nゴールドプレート\n封印された傲慢の塔6階テレポートアミュレット",
     "アイリス":"神聖な機敏のゲートル\n伝説製作秘法書\nマスターピースライフル\nアイリスのアミュレット\n英雄製作秘法書\n精霊の水晶(ポルートウォーター)\n技術教本 (死のスナイピング)\n希少級製作秘法書\n魔法書(アイススパイク)\n封印された傲慢の塔7階テレポートアミュレット",
+    "ハーピークイーン":"精霊の水晶(トリプルアップ)\n精霊の水晶(ソウルバリア)\n魔法書(アブソルートバリア)\n伝説製作秘法書\n歴史書第1章の袋\n封印されたエンシェントローブ\n封印された英雄防具製作秘法書\n[変身カード]ハーピー\n希少級製作秘法書",
+    "グレートミノタウロス":"技術教本(ブレイク：アブソルートバリア)\n技術書(カウンターバリアー：ベテラン)\n魔法書(インペリアルコール)\n伝説製作秘法書\n歴史書第5章の袋\n封印されたエンシェントプレートメイル\n封印された英雄防具製作秘法書",
+    "オーガキング":"オーガキングのベルト\n暗黒技術書(リミットカバー：アベンジャー)\n暗黒技術書(ダークスタン：アベンジャー)\n伝説製作秘法書\n歴史書第4章の袋\n封印されたエンシェントプレートメイル\n封印された英雄防具製作秘法書",
+    "コカトリスキング":"ドラゴンナイトの書版(サンダーグラブ：インパクト)\nドラゴンナイトの書版(ピア：インパクト)\nドラゴンナイトの書版(カウンターアサルト)\n伝説製作秘法書\n歴史書第2章の袋\n封印されたエンシェントスケイルメイル\n封印された英雄防具製作秘法書\n希少級製作秘法書\n[マジックドールカード]コカトリス",
+    "ドレイクキング":"技術書(クイックリカバリー)\n闇精霊の水晶(ルシファー)\n闇精霊の水晶(シャドウショック)\n伝説製作秘法書\n歴史書第3章の袋\n封印されたエンシェントレザーアーマー\n封印された英雄防具製作秘法書",
 }
 
 TARGET_MESSAGE = re.compile(r'^(.+)が.+に湧きます')
@@ -135,7 +145,10 @@ async def on_message(message):
         return
 
     boss_name = match_result.group(1)
-    drop_info = BOSS_DROP_MAP.get(boss_name, '')
+    drop_info = BOSS_DROP_MAP.get(boss_name)
+    if drop_info is None:
+        return
+
     e = discord.Embed(title=boss_name + ' の情報', description=drop_info)
     map_url = BOSS_POINT_MAP.get(boss_name, False)
     if map_url:

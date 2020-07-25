@@ -90,8 +90,20 @@ BOSS_INTERVAL_MAP = {
     'ビッグフットマーヨ':datetime.timedelta(minutes=180),
     'フェニックス':datetime.timedelta(minutes=415),
     'エンシェントジャイアント':datetime.timedelta(minutes=300),
-    'モニターデーモン':datetime.timedelta(minutes=420),
+    'モニターデーモン':datetime.timedelta(minutes=360),
     'デーモン':False,
+    'ゼニスクイーン':False,
+    'シアー':False,
+    'ヴァンパイア':False,
+    'ゾンビロード':False,
+    'クーガー':False,
+    'マミーロード':False,
+    'アイリス':False,
+    'ハーピークイーン':False,
+    'グレートミノタウロス':False,
+    'オーガキング':False,
+    'コカトリスキング':False,
+    'ドレイクキング':False,
 }
 
 TARGET_MESSAGE = re.compile(r'^(>|\?)\s*(\S+)\s*(\S+)?')
